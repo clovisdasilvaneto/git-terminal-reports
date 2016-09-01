@@ -1,0 +1,223 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:bgeneral:bel:transfer:model:TransferFlow",
+  "properties" : {
+    "data" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:bgeneral:bel:common:model:transfer:Transfer",
+        "properties" : {
+          "from" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:bgeneral:bel:common:model:Account",
+            "properties" : {
+              "number" : {
+                "type" : "string"
+              },
+              "name" : {
+                "type" : "string"
+              },
+              "friendlyName" : {
+                "type" : "string"
+              },
+              "type" : {
+                "type" : "string"
+              },
+              "currentBalance" : {
+                "type" : "number"
+              },
+              "availableBalance" : {
+                "type" : "number"
+              },
+              "lastSyncDate" : {
+                "type" : "integer",
+                "format" : "utc-millisec"
+              },
+              "status" : {
+                "type" : "string"
+              },
+              "renew" : {
+                "type" : "boolean"
+              },
+              "credit" : {
+                "type" : "boolean"
+              },
+              "debit" : {
+                "type" : "boolean"
+              },
+              "principal" : {
+                "type" : "boolean"
+              },
+              "actions" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:bgeneral:bel:common:model:Action",
+                  "properties" : {
+                    "name" : {
+                      "type" : "string"
+                    },
+                    "description" : {
+                      "type" : "string"
+                    },
+                    "actions" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "$ref" : "urn:jsonschema:com:bgeneral:bel:common:model:Action"
+                      }
+                    }
+                  }
+                }
+              },
+              "maskedNumber" : {
+                "type" : "string"
+              },
+              "currentBalanceLabel" : {
+                "type" : "string"
+              },
+              "availableBalanceLabel" : {
+                "type" : "string"
+              },
+              "lastSyncDateLabel" : {
+                "type" : "string"
+              }
+            }
+          },
+          "to" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:bgeneral:bel:common:model:Account"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "amount" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "wsErrorStatus" : {
+            "type" : "string"
+          },
+          "date" : {
+            "type" : "integer",
+            "format" : "utc-millisec"
+          }
+        }
+      }
+    },
+    "params" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:bgeneral:bel:transfer:model:TransferParams",
+      "properties" : {
+        "context" : {
+          "type" : "string"
+        },
+        "state" : {
+          "type" : "string"
+        },
+        "steps" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:bgeneral:bel:common:model:FlowStep",
+            "properties" : {
+              "id" : {
+                "type" : "string"
+              },
+              "name" : {
+                "type" : "string"
+              },
+              "selected" : {
+                "type" : "boolean"
+              }
+            }
+          }
+        },
+        "userId" : {
+          "type" : "string"
+        },
+        "fromAccounts" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:bgeneral:bel:transfer:dto:AccountViewHelper",
+            "properties" : {
+              "number" : {
+                "type" : "string"
+              },
+              "name" : {
+                "type" : "string"
+              },
+              "maskedNumber" : {
+                "type" : "string"
+              },
+              "friendlyName" : {
+                "type" : "string"
+              },
+              "currentBalance" : {
+                "type" : "number"
+              },
+              "avaiableBalance" : {
+                "type" : "number"
+              }
+            }
+          }
+        },
+        "toAccounts" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:bgeneral:bel:transfer:dto:AccountViewHelper"
+          }
+        },
+        "groupedTransfers" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:bgeneral:bel:common:model:transfer:GroupedTransfer",
+            "properties" : {
+              "fromAccount" : {
+                "type" : "object",
+                "$ref" : "urn:jsonschema:com:bgeneral:bel:common:model:Account"
+              },
+              "transfers" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "object",
+                  "$ref" : "urn:jsonschema:com:bgeneral:bel:common:model:transfer:Transfer"
+                }
+              },
+              "amount" : {
+                "type" : "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "errors" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:bgeneral:bel:common:model:FieldValidation",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "message" : {
+      "type" : "string"
+    }
+  }
+}
