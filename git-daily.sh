@@ -15,9 +15,11 @@ set -o errexit ; set -o nounset
 # Colors
 reset_color="\033[0m"            # Reset color
 summary_color="\033[0;32m"
-issue_color="\033[0;33m"          # Yellow
+issue_color="\033[0;33m"
+issue_color_bold="\033[1;33m"
 date_color="\033[0;35"
 bold_format="\033[1;33;44m"
+bold_format_purple="\033[1;33;35m"
 complete_80_col="                                                                     "
 issue_indentation="    "
 commit_indentation=$issue_indentation$issue_indentation
@@ -35,7 +37,7 @@ function goToRepositoryDir()
     cd /Users/miguelangelo/Liferay/GS/git/bg/upstream-bgp
 }
 
-function goBackTLastDir()
+function goBackToTheLastDir()
 {
     cd -
 }
@@ -56,7 +58,10 @@ function lastworkingday()
 
 function printCommitsAlreadyInUpstream()
 {
-  GIT_DAILY_LOG=$(git log --oneline --after="$SINCE" --reverse --author="$AUTHOR" --date=iso-strict-local --pretty=format:"%ad %s %o")
+
+  echo "\n${bold_format_purple}Merged Commits${reset_color}"
+
+  GIT_DAILY_LOG=$(git log --oneline --after="$SINCE" --reverse --author="$AUTHOR" --date=iso-strict-local --pretty=format:"%ad %s")
 
   LAST_JIRA_ISSUE_ID=""
   LAST_JIRA_ISSUE_DESCRIPTION=""
@@ -72,7 +77,7 @@ function printCommitsAlreadyInUpstream()
       if [[ $LAST_COMMIT_DATE != $COMMIT_DATE ]]; then
         LAST_COMMIT_DATE=$COMMIT_DATE
         LAST_JIRA_ISSUE_ID=""
-        echo "${bold_format}$COMMIT_DATE$complete_80_col${reset_color}"
+        echo "${issue_color_bold}$COMMIT_DATE$complete_80_col${reset_color}"
       fi
 
       if [[ $LAST_JIRA_ISSUE_ID != $JIRA_ISSUE_ID ]]; then
@@ -86,6 +91,16 @@ function printCommitsAlreadyInUpstream()
   done <<< "$GIT_DAILY_LOG"
 }
 
+function printPendingPullRequests()
+{
+
+  echo "\n${bold_format_purple}Pending PRs${reset_color}"
+
+  GH_PR_LIST=$(gh pr | egrep --color=always "#\d+")
+
+  echo "$GH_PR_LIST"
+}
+
 AUTHOR=${AUTHOR:="$(git config --global user.name)"}
 SINCE=${SINCE:="$(lastworkingday)"}
 #SINCE="1 month ago"
@@ -93,4 +108,5 @@ SINCE=${SINCE:="$(lastworkingday)"}
 goToRepositoryDir
 updateReporitory
 printCommitsAlreadyInUpstream
-goBackTLastDir
+printPendingPullRequests
+goBackToTheLastDir
