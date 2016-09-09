@@ -101,9 +101,16 @@ function printPendingPullRequests()
   echo "$GH_PR_LIST"
 }
 
+function printMyIssuesWithoutCommits()
+{
+  echo "\n${bold_format_purple}Issues Without Commits${reset_color}"
+
+
+}
+
 AUTHOR=${AUTHOR:="$(git config --global user.name)"}
-SINCE=${SINCE:="$(lastworkingday)"}
-#SINCE="1 month ago"
+#SINCE=${SINCE:="$(lastworkingday)"}
+SINCE="1 week ago"
 
 goToRepositoryDir
 updateReporitory
