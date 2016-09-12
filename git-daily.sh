@@ -96,7 +96,7 @@ function printPendingPullRequests()
 
   echo "\n${bold_format_purple}Pending PRs${reset_color}"
 
-  GH_PR_LIST=$(gh pr | egrep --color=always "#\d+")
+  GH_PR_LIST=$(gh pr --user | egrep --color=always "gallindo")
 
   echo "$GH_PR_LIST"
 }
