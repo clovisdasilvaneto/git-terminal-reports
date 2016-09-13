@@ -10,8 +10,11 @@
 #Cyan         0;36     Light Cyan    1;36
 #Light Gray   0;37     White         1;37
 
-#set -o errexit ;
-set -o nounset
+set -o errexit ;
+set -o nounset ;
+set -o pipefail ;
+#set -u ;
+#set -x
 
 # Colors
 reset_color="\033[0m"            # Reset color
@@ -36,23 +39,19 @@ function verifyRequirements()
 
   echo "\n${bold_format_purple}Verifying requirements...${reset_color}"
 
-  NPM_CMD_DIR=$(which npm)
-  JIRA_CMD_DIR=$(which jira)
-  JIRA_CMD_DIR=$(which jira)
+
+  JIRA_CMD_DIR=$(jira >> /dev/null || echo "not found")
 
 
-  if [[ $NPM_CMD_DIR == "npm not found" ]]; then
-    echo "\n${issue_color_bold}You need to instal the NodeJS in order to use this script.${reset_color}"
-    exit
-  fi
-
-  if [[ $JIRA_CMD_DIR == "jira not found" ]]; then
+  if [[ ${JIRA_CMD_DIR} == "not found" ]]; then
     echo "\n${issue_color_bold}Installing requirement jira-cmd from npm.${reset_color}"
     sudo npm install -g jira-cmd
 
     echo "\n${issue_color_bold}It's your first time with jira-cmd. You need to configure it.${reset_color}"
-    jira
+    sh -c `jira config`
   fi
+
+
 }
 
 function goToRepositoryDir()
@@ -142,7 +141,7 @@ UPSTREAM="upstream"
 verifyRequirements
 #goToRepositoryDir
 #updateReporitory
-printCommitsAlreadyInUpstream
-printPendingPullRequests
-printMyRunningIssues
+#printCommitsAlreadyInUpstream
+#printPendingPullRequests
+#printMyRunningIssues
 #goBackToTheLastDir
