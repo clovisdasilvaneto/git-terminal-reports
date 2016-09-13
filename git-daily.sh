@@ -10,7 +10,8 @@
 #Cyan         0;36     Light Cyan    1;36
 #Light Gray   0;37     White         1;37
 
-set -o errexit ; set -o nounset
+#set -o errexit ;
+set -o nounset
 
 # Colors
 reset_color="\033[0m"            # Reset color
@@ -30,7 +31,29 @@ commit_indentation=$issue_indentation$issue_indentation
 #pr
 #for branch in `git branch -r | grep -v HEAD`;do echo -e `git show --format="%ci %an %s" $branch | head -n 1` \\t$branch; done | sort -r | grep Miguel
 
+function verifyRequirements()
+{
 
+  echo "\n${bold_format_purple}Verifying requirements...${reset_color}"
+
+  NPM_CMD_DIR=$(which npm)
+  JIRA_CMD_DIR=$(which jira)
+  JIRA_CMD_DIR=$(which jira)
+
+
+  if [[ $NPM_CMD_DIR == "npm not found" ]]; then
+    echo "\n${issue_color_bold}You need to instal the NodeJS in order to use this script.${reset_color}"
+    exit
+  fi
+
+  if [[ $JIRA_CMD_DIR == "jira not found" ]]; then
+    echo "\n${issue_color_bold}Installing requirement jira-cmd from npm.${reset_color}"
+    sudo npm install -g jira-cmd
+
+    echo "\n${issue_color_bold}It's your first time with jira-cmd. You need to configure it.${reset_color}"
+    jira
+  fi
+}
 
 function goToRepositoryDir()
 {
@@ -96,24 +119,30 @@ function printPendingPullRequests()
 
   echo "\n${bold_format_purple}Pending PRs${reset_color}"
 
-  GH_PR_LIST=$(gh pr --user | egrep --color=always "gallindo")
+  GH_PR_LIST=$(gh pr --me --remote $UPSTREAM)
 
   echo "$GH_PR_LIST"
 }
 
-function printMyIssuesWithoutCommits()
+function printMyRunningIssues()
 {
-  echo "\n${bold_format_purple}Issues Without Commits${reset_color}"
+  echo "\n${bold_format_purple}Pending Issues${reset_color}"
 
+  JIRA_RUNNING_ISSUES=$(jira running)
+
+  echo "$JIRA_RUNNING_ISSUES"
 
 }
 
 AUTHOR=${AUTHOR:="$(git config --global user.name)"}
 #SINCE=${SINCE:="$(lastworkingday)"}
 SINCE="1 week ago"
+UPSTREAM="develop"
 
-goToRepositoryDir
-updateReporitory
+verifyRequirements
+#goToRepositoryDir
+#updateReporitory
 printCommitsAlreadyInUpstream
 printPendingPullRequests
-goBackToTheLastDir
+printMyRunningIssues
+#goBackToTheLastDir
