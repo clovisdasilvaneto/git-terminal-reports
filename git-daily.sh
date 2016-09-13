@@ -84,7 +84,7 @@ function printCommitsAlreadyInUpstream()
 
   echo "\n${bold_format_purple}Merged Commits${reset_color}"
 
-  GIT_DAILY_LOG=$(git log --oneline --after="$SINCE" --reverse --author="$AUTHOR" --date=iso-strict-local --pretty=format:"%ad %s")
+  GIT_DAILY_LOG=$(git log --oneline --after="$SINCE" --author="$AUTHOR" --date=iso-strict-local --pretty=format:"%ad %s" | sort --reverse)
 
   LAST_JIRA_ISSUE_ID=""
   LAST_JIRA_ISSUE_DESCRIPTION=""
