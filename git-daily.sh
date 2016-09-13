@@ -137,7 +137,7 @@ function printMyRunningIssues()
 AUTHOR=${AUTHOR:="$(git config --global user.name)"}
 #SINCE=${SINCE:="$(lastworkingday)"}
 SINCE="1 week ago"
-UPSTREAM="develop"
+UPSTREAM="upstream"
 
 verifyRequirements
 #goToRepositoryDir
