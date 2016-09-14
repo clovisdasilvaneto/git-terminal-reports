@@ -40,15 +40,13 @@ function verifyRequirements()
   echo "\n${bold_format_purple}Verifying requirements...${reset_color}"
 
 
-  JIRA_CMD_DIR=$(jira >> /dev/null || echo "not found")
+  JIRA_CMD_DIR=$(jira &> /dev/null || echo "not found")
 
 
   if [[ ${JIRA_CMD_DIR} == "not found" ]]; then
-    echo "\n${issue_color_bold}Installing requirement jira-cmd from npm.${reset_color}"
-    sudo npm install -g jira-cmd
-
-    echo "\n${issue_color_bold}It's your first time with jira-cmd. You need to configure it.${reset_color}"
-    sh -c `jira config`
+    echo "\n${issue_color_bold}Install jira cmd client and run this script again.${reset_color}"
+    echo "\n${summary_color}running${reset_color} npm install -g jira-cmd ${summary_color}and then${reset_color} jira config\n"
+    exit
   fi
 
 
@@ -118,7 +116,7 @@ function printPendingPullRequests()
 
   echo "\n${bold_format_purple}Pending PRs${reset_color}"
 
-  GH_PR_LIST=$(gh pr --me --remote $UPSTREAM)
+  GH_PR_LIST=$(gh pr --user liferay --remote $UPSTREAM | grep $AUTHOR)
 
   echo "$GH_PR_LIST"
 }
@@ -141,7 +139,7 @@ UPSTREAM="upstream"
 verifyRequirements
 #goToRepositoryDir
 #updateReporitory
-#printCommitsAlreadyInUpstream
-#printPendingPullRequests
-#printMyRunningIssues
+printCommitsAlreadyInUpstream
+printPendingPullRequests
+printMyRunningIssues
 #goBackToTheLastDir
