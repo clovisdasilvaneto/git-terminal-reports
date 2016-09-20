@@ -52,65 +52,6 @@ verifyRequirements()
 
 }
 
-goToRepositoryDir()
-{
-    cd /Users/miguelangelo/Liferay/GS/git/bg/upstream-bgp
-}
-
-goBackToTheLastDir()
-{
-    cd -
-}
-
-updateReporitory()
-{
-  git pull -r origin develop
-}
-
-lastworkingday()
-{
-    if [[ "1" == "$(date +%u)" ]]; then
-        echo "last friday"
-    else
-        echo "yesterday"
-    fi
-}
-
-printCommitsAlreadyInUpstream()
-{
-
-  echo "\n${bold_format_purple}Merged Commits${reset_color}"
-
-  GIT_DAILY_LOG=$(git log --oneline --after="$SINCE" --author="$AUTHOR" --date=iso-strict-local --pretty=format:"%ad %s" | sort --reverse)
-
-  LAST_JIRA_ISSUE_ID=""
-  LAST_JIRA_ISSUE_DESCRIPTION=""
-  LAST_COMMIT_DATE=""
-
-  while IFS= read -r line
-  do
-      COMMIT_DATE=$(echo "$line" | cut -c1-10)
-      COMMIT_MESSAGE=$(echo "$line" | cut -c26-)
-
-      JIRA_ISSUE_ID=$(echo "$line" | awk '{print $2}' | cut -c1-7)
-
-      if [[ $LAST_COMMIT_DATE != $COMMIT_DATE ]]; then
-        LAST_COMMIT_DATE=$COMMIT_DATE
-        LAST_JIRA_ISSUE_ID=""
-        echo "${issue_color_bold}$COMMIT_DATE$complete_80_col${reset_color}"
-      fi
-
-      if [[ $LAST_JIRA_ISSUE_ID != $JIRA_ISSUE_ID ]]; then
-        JIRA_ISSUE_DESCRIPTION=$(jira show -o summary $JIRA_ISSUE_ID)
-        LAST_JIRA_ISSUE_ID=$JIRA_ISSUE_ID
-        LAST_JIRA_ISSUE_DESCRIPTION=$JIRA_ISSUE_DESCRIPTION
-        echo "$issue_indentation[${issue_color}$JIRA_ISSUE_ID${reset_color} - ${summary_color}$JIRA_ISSUE_DESCRIPTION${reset_color}]"
-      fi
-
-      echo "$commit_indentation$COMMIT_MESSAGE"
-  done <<< "$GIT_DAILY_LOG"
-}
-
 printPendingPullRequests()
 {
 
@@ -127,14 +68,13 @@ printMyRunningIssues()
 {
   echo "\n${bold_format_purple}Pending Issues${reset_color}"
 
-  JIRA_RUNNING_ISSUES=$(jira running)
+  JIRA_RUNNING_ISSUES=$(jira jql 'project = "PROJECT - Banco General Panama" AND Sprint in openSprints() and status in ("Ready for QA", "In QA")   ORDER BY status,priority DESC')
 
   echo "$JIRA_RUNNING_ISSUES"
 
 }
 
 AUTHOR=${AUTHOR:="$(git config --global user.name)"}
-SINCE=${SINCE:="$(lastworkingday)"}
 #SINCE="1 week ago"
 UPSTREAM="upstream"
 
